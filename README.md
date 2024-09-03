@@ -1,6 +1,6 @@
 # Description
 
-This repository is meant to serve as a general template for how to set up new repositories in the JogetOSS organization. 
+Emote Form Element plugin allows users to react to submitted forms using emotes. These emotes are stored in a separate form while maintaining a reference to the original form. Please refer to its [documentation](https://dev.joget.org/community/display/SANDBOX2/Emote+Form+Element).
 
 # Getting Help
 
