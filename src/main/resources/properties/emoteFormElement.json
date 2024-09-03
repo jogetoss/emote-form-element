@@ -1,0 +1,91 @@
+[
+    {
+        "title": "@@org.joget.marketplace.emote.element.configElement@@",
+        "properties": [
+            {
+                "name": "id",
+                "label": "@@org.joget.marketplace.emote.element.id@@",
+                "type": "textfield",
+                "regex_validation": "^[a-zA-Z0-9_]+$",
+                "validation_message": "@@org.joget.marketplace.emote.element.invalidId@@",
+                "required": "True"
+            },
+            {
+                "name": "formDefId",
+                "label": "@@org.joget.marketplace.emote.element.formDefId@@",
+                "type": "selectbox",
+                "required": "True",
+                "options_ajax": "[CONTEXT_PATH]/web/json/console/app[APP_PATH]/forms/options"
+            },
+            {
+                "name": "emoteField",
+                "label": "@@org.joget.marketplace.emote.element.emoteField@@",
+                "type": "selectbox",
+                "options_ajax_on_change": "formDefId",
+                "options_ajax": "[CONTEXT_PATH]/web/json/console/app[APP_PATH]/form/columns/options",
+                "required": "True"
+            },
+            {
+                "name": "foreignKeyField",
+                "label": "@@org.joget.marketplace.emote.element.foreignKeyField@@",
+                "type": "selectbox",
+                "options_ajax_on_change": "formDefId",
+                "options_ajax": "[CONTEXT_PATH]/web/json/console/app[APP_PATH]/form/columns/options",
+                "required": "True"
+            }
+        ]
+    },
+    {
+        "title": "@@org.joget.marketplace.emote.element.styling@@",
+        "properties": [
+            {
+                "name":"btnIcon",
+                "label":"@@org.joget.marketplace.emote.element.btnIcon@@",
+                "type":"icon-textfield",
+                "value": "@@org.joget.marketplace.emote.element.btnIcon.value@@",
+                "required":"True"
+             },             
+            {
+                "name": "btnBgColor",
+                "label": "@@org.joget.marketplace.emote.element.btnBgColor@@",
+                "type": "color",
+                "value": "@@org.joget.marketplace.emote.element.btnBgColor.value@@"
+            },
+            {
+                "name": "btnIconColor",
+                "label": "@@org.joget.marketplace.emote.element.btnIconColor@@",
+                "type": "color",
+                "value": "@@org.joget.marketplace.emote.element.btnIconColor.value@@"
+
+            },
+            {
+                "name": "reactbtnBgColor",
+                "label": "@@org.joget.marketplace.emote.element.reactbtnBgColor@@",
+                "type": "color",
+                "value": "@@org.joget.marketplace.emote.element.reactbtnBgColor.value@@"
+
+            },
+            {
+                "name": "reactbtnTextColor",
+                "label": "@@org.joget.marketplace.emote.element.reactbtnTextColor@@",
+                "type": "color",
+                "value": "@@org.joget.marketplace.emote.element.reactbtnTextColor.value@@"
+
+            },
+            {
+                "name": "reactbtnReactedBgColor",
+                "label": "@@org.joget.marketplace.emote.element.reactbtnReactedBgColor@@",
+                "type": "color",
+                "value": "@@org.joget.marketplace.emote.element.reactbtnReactedBgColor.value@@"
+
+            },
+            {
+                "name": "reactbtnReactedTextColor",
+                "label": "@@org.joget.marketplace.emote.element.reactbtnReactedTextColor@@",
+                "type": "color",
+                "value": "@@org.joget.marketplace.emote.element.reactbtnReactedTextColor.value@@"
+
+            }
+        ]
+    }
+]
