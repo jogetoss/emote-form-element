@@ -2,9 +2,9 @@
 
 Emote Form Element plugin allows users to react to submitted forms using emotes. These emotes are stored in a separate form while maintaining a reference to the original form. Please refer to its [documentation](https://dev.joget.org/community/display/SANDBOX2/Emote+Form+Element).
 
-* If you are using DX7 or older, you will need to update the emoji column to support storing emojis in the database. (For more information, DX7 or older is using utf8mb3 encoding)
+** If you are using DX7 or older, you will need to update the emote column to support storing emotes in the database. (For more information, DX7 or older is using utf8mb3 encoding)
 
-* For example, after importing the sample app, you should run the SQL code below to change the column to utf8mb4 encoding.
+** For example, after importing the sample app, you should run the SQL code below to change the emote column to utf8mb4 encoding.
 
 ```
 ALTER TABLE `app_fd_efesa_store` 
