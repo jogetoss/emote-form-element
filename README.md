@@ -1,6 +1,6 @@
 # Description
 
-Emote Form Element plugin allows users to react to submitted forms using emotes. These emotes are stored in a separate form while maintaining a reference to the original form. Please refer to its [documentation](https://dev.joget.org/community/display/SANDBOX2/Emote+Form+Element).
+**Emote Form Element** plugin allows users to react to submitted forms using emotes. These emotes are stored in a separate form while maintaining a reference to the original form. Please refer to its [documentation](https://dev.joget.org/community/display/marketplace/Emote+Form+Element).
 
 ** If you are using DX7 or older, you will need to update the emote column to support storing emotes in the database. (For more information, DX7 or older is using utf8mb3 encoding)
 
