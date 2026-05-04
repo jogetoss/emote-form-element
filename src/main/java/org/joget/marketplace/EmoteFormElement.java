@@ -18,6 +18,7 @@ import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.FormBuilderPaletteElement;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.model.FormRow;
+import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormRowSet;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
@@ -148,7 +149,7 @@ public class EmoteFormElement extends Element implements FormBuilderPaletteEleme
 
     @Override
     public String getFormBuilderTemplate() {
-        return "<label class='label'>"+getLabel()+"</label>";
+        return "<label class='label'>" + getLabel() + "</label>";
     }
 
     @Override
@@ -170,7 +171,7 @@ public class EmoteFormElement extends Element implements FormBuilderPaletteEleme
                     formDefId = c.getString("formDefId");
                     emoteField = c.getString("emoteField");
                     fkField = c.getString("foreignKeyField");
-                    String condition = "where e.customProperties." + fkField + " = ? AND e.customProperties." + emoteField + " like ? AND e.createdBy = ?" ;
+                    String condition = "where e.customProperties." + fkField + " = ? AND e.customProperties." + emoteField + " like ? AND e.createdBy = ?";
                     String clickedValue = request.getParameter("clickedValue");
                     AppService appService = (AppService) FormUtil.getApplicationContext().getBean("appService");
                     FormDataDao formDataDao = (FormDataDao) AppUtil.getApplicationContext().getBean("formDataDao");
@@ -195,11 +196,42 @@ public class EmoteFormElement extends Element implements FormBuilderPaletteEleme
                     if (action.equals("add")) {
                         // if row is found, dont allow save duplicate emote
                         if (choosenRow != null && !choosenRow.isEmpty()) {
-                          
+
                         } else {
+                            try {
+                                Form storeForm = appService.viewDataForm(appDef.getAppId(), appDef.getVersion().toString(), formDefId, null, null, null, new FormData(), null, null);
+                                Element emoteElement = FormUtil.findElement(emoteField, storeForm, new FormData());
+                                if (emoteElement != null) {
+                                    boolean isReadOnly = "true".equalsIgnoreCase(emoteElement.getPropertyString("readonly"));
+
+                                    if (isReadOnly) {
+                                        response.setContentType("application/json");
+                                        response.getWriter().write(new JSONObject().put("error", "Field is readonly").toString());
+                                        return;
+                                    }
+                                }
+                            } catch (Exception e) {
+                                LogUtil.warn(getClassName(), "Error checking readonly status: " + e.getMessage());
+                            }
+
                             storeEmote(clickedValue, fkValue, formDefId, tableName, fkField, emoteField, appService, longTermCache);
                         }
                     } else if (action.equals("remove")) {
+                        try {
+                            Form storeForm = appService.viewDataForm(appDef.getAppId(), appDef.getVersion().toString(), formDefId, null, null, null, new FormData(), null, null);
+                            Element emoteElement = FormUtil.findElement(emoteField, storeForm, new FormData());
+                            if (emoteElement != null) {
+                                boolean isReadOnly = "true".equalsIgnoreCase(emoteElement.getPropertyString("readonly"));
+                                if (isReadOnly) {
+                                    response.setContentType("application/json");
+                                    response.getWriter().write(new JSONObject().put("error", "Field is readonly").toString());
+                                    return;
+                                }
+                            }
+                        } catch (Exception e) {
+                            LogUtil.warn(getClassName(), "Error checking readonly status: " + e.getMessage());
+                        }
+
                         if (choosenRow != null && !choosenRow.isEmpty()) {
                             formDataDao.delete(formDefId, tableName, choosenRow);
 
@@ -236,7 +268,7 @@ public class EmoteFormElement extends Element implements FormBuilderPaletteEleme
         if (el != null) {
             FormRowSet rowsCache = (FormRowSet) el.getObjectValue();
 
-            if(!rowsCache.equals(rows)){
+            if (!rowsCache.equals(rows)) {
                 net.sf.ehcache.Element elUpdate = new net.sf.ehcache.Element(foreignKeyValue, rows);
                 longTermCache.remove(foreignKeyValue);
                 longTermCache.put(elUpdate);
@@ -257,9 +289,12 @@ public class EmoteFormElement extends Element implements FormBuilderPaletteEleme
             String key = row.getProperty(fieldId);
             String value = row.getProperty("createdByName");
 
+            if (value == null || value.trim().isEmpty()) {
+                value = "Anonymous";
+            }
+
             countMap.put(key, countMap.getOrDefault(key, 0) + 1);
 
-           
             if (!valueMap.containsKey(key)) {
                 valueMap.put(key, new ArrayList<String>());
             }
@@ -269,6 +304,12 @@ public class EmoteFormElement extends Element implements FormBuilderPaletteEleme
         // new list to store the counted and aggregated results
         FormRowSet countedList = new FormRowSet();
 
+        String currentUserFullName = WorkflowUtil.getCurrentUserFullName();
+
+        if (currentUserFullName == null || currentUserFullName.trim().isEmpty() || "roleAnonymous".equals(currentUserFullName)) {
+            currentUserFullName = "Anonymous";
+        }
+
         // Merge countMap and valueMap to produce the final output
         for (String key : countMap.keySet()) {
             FormRow countedEntry = new FormRow();
@@ -276,7 +317,9 @@ public class EmoteFormElement extends Element implements FormBuilderPaletteEleme
             countedEntry.put("count", countMap.get(key));
             countedEntry.put("createdByName", joinList(valueMap.get(key)));
 
-            if(joinList(valueMap.get(key)).contains(WorkflowUtil.getCurrentUserFullName())){
+            String joinedNames = joinList(valueMap.get(key));
+
+            if (joinedNames.contains(currentUserFullName)) {
                 countedEntry.put("sameUser", true);
             } else {
                 countedEntry.put("sameUser", false);
@@ -320,5 +363,5 @@ public class EmoteFormElement extends Element implements FormBuilderPaletteEleme
         rows.addAll(rowsCache);
         net.sf.ehcache.Element elStore = new net.sf.ehcache.Element(fkId, rows);
         longTermCache.put(elStore);
-    }    
+    }
 }
